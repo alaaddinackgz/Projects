@@ -44,7 +44,7 @@ public class Country {
 	    this.county_code = county_code;
 	  }
 	  
-	  @OneToMany
+	  @OneToMany(fetch = FetchType.LAZY)
 	    // Bire çok iliski oldugunu belirtiyoruz.
 	    // Burada Country tipinde Liste olusturuyoruz.
 	    // Bunun nedeni bir kullanici birden fazla Country olusturabilecesi için
