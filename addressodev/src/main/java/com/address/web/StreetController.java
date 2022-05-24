@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.address.dao.StreetRepository;
 import com.address.dao.StreetRepositoryJpa;
-import com.address.model.Quarter;
 import com.address.model.Street;
 
 @RestController
@@ -62,11 +61,14 @@ public class StreetController {
 	 
 	
 	 @GetMapping("street/quartercode/{quarterCode}")
-	 public ResponseEntity<List<Street>> getStreetByQuarterCode(@PathVariable("quarterCode") String quarterCode){
+	 public ResponseEntity<Optional<List<Street>>> getStreetByQuarterCode(@PathVariable("quarterCode") String quarterCode){
 		 
-		 List<Street> street = streetRepositoryJpa.getStreetByQuarterCode(quarterCode);
-		 
-		 return ResponseEntity.ok(street);
+		 Optional<List<Street>> optionalStreets = streetRepositoryJpa.getStreetByQuarterCode(quarterCode);
+		 // isPresent methodu null kontrolu yapar.(Java8) empty dahi olsa null olmayan veri buradan gecer.
+		 //  eger Empty kabul edilmeyecek ise kontrol etmeliyiz.
+		 //orn:
+		 //return optionalStreets.isPresent()&&org.springframework.util.ObjectUtils.isEmpty(optionalStreets.get())? ResponseEntity.ok(optionalStreets): (ResponseEntity<Optional<List<Street>>>) ResponseEntity.notFound();
+		 return optionalStreets.isPresent()? ResponseEntity.ok(optionalStreets): (ResponseEntity<Optional<List<Street>>>) ResponseEntity.notFound();
 	 }
 
 }

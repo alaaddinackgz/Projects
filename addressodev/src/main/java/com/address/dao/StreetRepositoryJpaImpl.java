@@ -1,11 +1,13 @@
 package com.address.dao;
 
+import com.address.fnc.FncHepler;
 import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
 import com.address.model.Street;
@@ -16,27 +18,12 @@ public class StreetRepositoryJpaImpl implements StreetRepositoryJpa {
 	@PersistenceContext
 	EntityManager entityManager;
 	
-
-	/*@Override
-	public List<Street> getStreetByQuarterCode(String quarterCode) {
-		
-		
-		return entityManager.createQuery(" from Street where QUARTER_CODE = :quarterCode",Street.class)
-				.setParameter("quarterCode", quarterCode).getResultList().;
-	}*/
-	
 	@Override
 	public Optional<List<Street>> getStreetByQuarterCode(String quarterCode) {
-		
-		List<Street> streets = entityManager.createQuery(" from Street where QUARTER_CODE = :quarterCode",Street.class)
-				.setParameter("quarterCode", quarterCode).getResultList();
-		
-		 if (streets.isEmpty()) {
-		        return Optional.empty();
-		    }
-		    return Optional.of(streets);
+		final TypedQuery<Street> query = entityManager.createQuery(
+						"select s from Street s where s.quarterCode = :quarterCode", Street.class)
+				.setParameter("quarterCode", quarterCode);
+		return FncHepler.toSupplierOptional(query::getResultList);
 	}
-	
-	
 
 }
